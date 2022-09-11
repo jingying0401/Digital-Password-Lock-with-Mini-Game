@@ -1,0 +1,535 @@
+/* mbed Microcontroller Library
+ * Copyright (c) 2019 ARM Limited
+ * SPDX-License-Identifier: Apache-2.0
+ */
+ 
+// RS   PC_0
+// E    PC_1
+// D4   PC_2
+// D5   PC_3
+// D6   PC_4
+// D7   PC_5
+
+#include "mbed.h"
+#include "TextLCD.h"
+#include "keypad.h"
+#include "string"
+
+TextLCD MyLCD (PC_0, PC_1, PC_2, PC_3, PC_4, PC_5); //LCD interface
+                       //1       2       3       4       5        6        7        8        9      10      11      12      13      14      15      16      17      18
+DigitalOut leds1[] = {(PC_6), (PC_7), (PC_8), (PC_9), (PC_10), (PC_11), (PC_12), (PC_13), (PB_0), (PB_1), (PB_2), (PB_3), (PB_4), (PB_5), (PB_6), (PB_7), (PB_8), (PB_9)};
+                      //17      18   
+            //  c1   c2    c3     c4     r1     r2     r3     r4
+Keypad keypad(PA_8, PA_9, PA_10, PA_11, PA_12, PA_13, PA_14, PA_15);
+
+//functions declaration
+const string set_password(string z);
+const string input_password();
+
+void player1(int *a1, int *a2, int *a3, int *b1, int *b2, int *b3, int *c1, int *c2);
+void player2(int *d1, int *d2, int *d3, int *e1, int *e2, int *e3, int *f1, int *f2);
+
+//declaration of variables
+char key, key2;
+string password;
+string the_password;
+string z;
+
+int y = 0;
+int a1 = 0;
+int a2 = 0;
+int a3 = 0;
+int b1 = 0;
+int b2 = 0;
+int b3 = 0;
+int c1 = 0;
+int c2 = 0;
+int d1 = 0;
+int d2 = 0;
+int d3 = 0;
+int e1 = 0;
+int e2 = 0;
+int e3 = 0;
+int f1 = 0;
+int f2 = 0;
+
+//main program
+int main ()
+{
+    //password
+    keypad.enablePullUp();
+    the_password = '1';         
+    MyLCD.printf("Please enter \nyour password");
+    
+    while(1){
+        key = keypad.getKey();
+        if(key == 'A'){
+            password = input_password();
+            }
+        if(key == 'B'){
+            the_password = set_password (z);
+            }
+        if(key == 'C'){
+            break;
+            }
+        }
+    
+    //mini game = tic tac toe
+    MyLCD.cls();
+    MyLCD.printf("Tic Tac Toe\n");
+    
+    while(1)
+    {
+        
+        key2 = keypad.getKey();
+        
+        if (key2=='A')
+        {
+            player1(&a1, &a2, &a3, &b1, &b2, &b3, &c1, &c2);
+        }
+        
+        if(key2=='B')
+        {
+            player2(&d1, &d2, &d3, &e1, &e2, &e3, &f1, &f2);
+        }
+        
+        if(a1==6)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(a2==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(a3==24)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(b1==12)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(b2==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(b3==18)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(c1==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+        if(c2==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Red win!");
+            break;
+        }
+        
+         if(d1==6)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(d2==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(d3==24)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(e1==12)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(e2==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(e3==18)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(f1==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+        
+        if(f2==15)
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulation! Blue win!");
+            break;
+        }
+    }
+}
+
+//function to input password
+const string input_password(){
+    string passw;
+    passw.erase();
+    while(1){
+        key = keypad.getKey(); 
+        if(key == '1'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '2'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '3'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '4'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '5'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '6'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '7'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '8'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '9'){
+            passw += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",passw.c_str());
+            }
+        if(key == '*'){
+            while(1){
+                key = keypad.getKey();
+                if(passw == the_password){
+                    MyLCD.cls();
+                    MyLCD.printf("Your Password \nWas Correct!");
+                    wait(0.2); 
+                    }
+                if(passw != the_password){
+                    MyLCD.cls();
+                    MyLCD.printf("Incorrect!\nPlease re-enter.");
+                    input_password();
+                    }
+                if(key == '#'){
+                    wait(0.2);
+                    MyLCD.cls();
+                    MyLCD.printf("Main Program");
+                    return 0;
+                    }
+                }
+            }
+    }
+}
+
+//function to set password
+const string set_password(string z)
+{
+    
+    while(1){
+        key = keypad.getKey(); 
+        if(key == '1'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '2'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '3'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '4'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '5'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '6'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '7'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '8'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '9'){
+            z += key;
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("%s",z.c_str());
+            }
+        if(key == '*'){
+            MyLCD.cls();
+            MyLCD.printf("Password Set \nGood To Go");
+            }
+        if(key == '#'){
+            wait(0.2);
+            MyLCD.cls();
+            MyLCD.printf("Main Program");
+            return z;
+            }
+        }
+}
+
+//declare function for player 1
+void player1 (int *a1, int *a2, int *a3, int *b1, int *b2, int *b3, int *c1, int *c2)
+{
+    while(1)
+    {
+        key = keypad.getKey();
+        wait(0.3);
+        if (key=='1')
+        {
+            leds1[0] = 1;
+            *a1=*a1+1;
+            *b1=*b1+1;
+            *c1=*c1+1;
+        }
+        
+        if (key=='2')
+        {
+            leds1[1] = 1;
+            *a1=*a1+2;
+            *b2=*b2+2;
+        }
+            
+        if (key=='3')
+        {
+            leds1[2] = 1;
+            *a1=*a1+3;
+            *b3=*b3+3;
+            *c2=*c2+3;
+        }
+            
+        if (key=='4')
+        {
+            leds1[3] = 1;
+            *a2=*a2+4;
+            *b1=*b1+4;
+        }
+            
+        if (key=='5')
+        {
+            leds1[4] = 1;
+            *a2=*a2+5;
+            *b2=*b2+5;
+            *c1=*c1+5;
+            *c2=*c2+5;
+        }
+            
+        if (key=='6')
+        {
+            leds1[5] = 1;
+            *a2=*a2+6;
+            *b3=*b3+6;
+        }
+            
+        if (key=='7')
+        {
+            leds1[6] = 1;
+            *a3=*a3+7;
+            *b1=*b1+7;
+            *c2=*c2+7;
+        }
+            
+        if (key=='8')
+        {
+            leds1[7] = 1;
+            *a3=*a3+8;
+            *b2=*b2+8;
+        }
+            
+        if (key=='9')
+        {
+            leds1[8] = 1;
+            *a3=*a3+9;
+            *b3=*b3+9;
+            *c1=*c1+9;
+        }
+        if (key=='*')
+        {
+            MyLCD.printf("Next ");
+            break;
+        }
+        
+    }
+}
+
+//declare function for player 2
+void player2 (int *d1, int *d2, int *d3, int *e1, int *e2, int *e3, int *f1, int *f2)
+{
+    while(1)
+    {
+        key = keypad.getKey();
+        wait(0.5);
+        if (key=='1')
+        {
+            leds1[9] = 1;
+            *d1=*d1+1;
+            *e1=*e1+1;
+            *f1=*f1+1;
+        }
+        
+        if (key=='2')
+        {
+            leds1[10] = 1;
+            *d1=*d1+2;
+            *e2=*e2+2;
+        }
+            
+        if (key=='3')
+        {
+            leds1[11] = 1;
+            *d1=*d1+3;
+            *e3=*e3+3;
+            *f2=*f2+3;
+        }
+            
+        if (key=='4')
+        {
+            leds1[12] = 1;
+            *d2=*d2+4;
+            *e1=*e1+4;
+        }
+            
+        if (key=='5')
+        {
+            leds1[13] = 1;
+            *d2=*d2+5;
+            *e2=*e2+5;
+            *f1=*f1+5;
+            *f2=*f2+5;
+        }
+            
+        if (key=='6')
+        {
+            leds1[14] = 1;
+            *d2=*d2+6;
+            *e3=*e3+6;
+        }
+            
+        if (key=='7')
+        {
+            leds1[15] = 1;
+            *d3=*d3+7;
+            *e1=*e1+7;
+            *f2=*f2+7;
+        }
+            
+        if (key=='8')
+        {
+            leds1[16] = 1;
+            *d3=*d3+8;
+            *e2=*e2+8;
+        }
+            
+        if (key=='9')
+        {
+            leds1[17] = 1;
+            *d3=*d3+9;
+            *e3=*e3+9;
+            *f1=*f1+9;
+        }
+        
+        if (key=='*')
+        {
+            MyLCD.printf("Next ");
+            break;
+        }
+        
+    }
+    
+}
